@@ -449,13 +449,14 @@ public class InitGamePatch {
             boolean isNewInterface = SettingsPatch.getSettingsKeyValue(SettingsPatch.IS_NEW_INTERFACE);
             boolean isStreamerMode = SettingsPatch.getSettingsKeyValue(SettingsConstants.STREAMER_MODE);
             boolean isAmbientSounds = SettingsPatch.getSettingsKeyValue(SettingsConstants.AMBIENT_SOUNDS);
+            boolean isUpdatedGraphics = SettingsPatch.getSettingsKeyValue(SettingsConstants.UPDATED_GRAPHICS);
             String deviceInfo = Build.MANUFACTURER + ":" + Build.MODEL + ":" + getUniqueID() + ":notify_on";
             int lastUIElementID = UIElementID.getLastUIElementID();
 
             SharedPreferences sharedPreferences = SettingsPatch.getSettingsPreferences();
             String notifyHash = sharedPreferences.getString(SettingsConstants.TOKEN, getUniqueID());
 
-            GTASA.InitSetting(isNewInterface, isShowFps ? 1 : 0, isNewKeyboard, isStreamerMode, "(" + CONNECT_TAG + ") 2.1 - " + getLauncherVersion(), lastUIElementID, deviceInfo, notifyHash, FirebaseConfigHelper.INSTANCE.getChannelsState(), isAmbientSounds);
+            GTASA.InitSetting(isNewInterface, isShowFps ? 1 : 0, isNewKeyboard, isStreamerMode, "(" + CONNECT_TAG + ") 2.1 - " + getLauncherVersion(), lastUIElementID, deviceInfo, notifyHash, FirebaseConfigHelper.INSTANCE.getChannelsState(), isAmbientSounds, isUpdatedGraphics);
             
             FirebaseCrashlytics.getInstance().setUserId(getUniqueID());
             SettingsPatch.dumpAllSettingsKeys();
