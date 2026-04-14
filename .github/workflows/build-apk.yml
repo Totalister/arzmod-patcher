@@ -211,6 +211,7 @@ jobs:
       - name: Build Rodina APKs
         if: inputs.build_rodina
         run: |
+          mkdir -p dist
           python main.py -actual -rodina -fullarm -setgitver ${{ steps.get_version.outputs.launcher_version }}
           
           if [ -f "./app-debug/dist/app-rdnmod-x32.apk" ]; then
