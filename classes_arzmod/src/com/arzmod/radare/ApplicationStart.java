@@ -732,12 +732,47 @@ public class ApplicationStart {
                         String jsonResponse = new java.util.Scanner(input).useDelimiter("\\A").next();
                         input.close();
 
-                        JSONObject json = jsonResponse.startsWith("[") ? 
-                            new JSONArray(jsonResponse).getJSONObject(0) : 
-                            new JSONObject(jsonResponse);
-                        String latestVersion = json.getString("tag_name").replace("v", "");
-                        final String releaseUrl = json.getString("html_url");
-                        boolean isPrerelease = json.optBoolean("prerelease", false);
+                        JSONArray releasesArray = new JSONArray(jsonResponse);
+                        
+                        String clientType = BuildConfig.IS_ARIZONA ? "arizona" : "rodina";
+                        String arch = Build.CPU_ABI.equals("arm64-v8a") ? "x64" : "x32";
+                        String targetApkName = "app-" + clientType + "-" + arch + "-patched.apk";
+                        
+                        Log.d("arzmod-app-module", "Looking for APK: " + targetApkName);
+                        
+                        JSONObject foundRelease = null;
+                        String latestVersion = "";
+                        String releaseUrl = "";
+                        
+                        for (int i = 0; i < releasesArray.length(); i++) {
+                            JSONObject release = releasesArray.getJSONObject(i);
+                            JSONArray assets = release.getJSONArray("assets");
+                            
+                            boolean hasTargetApk = false;
+                            for (int j = 0; j < assets.length(); j++) {
+                                JSONObject asset = assets.getJSONObject(j);
+                                String assetName = asset.getString("name");
+                                if (assetName.equals(targetApkName)) {
+                                    hasTargetApk = true;
+                                    break;
+                                }
+                            }
+                            
+                            if (hasTargetApk) {
+                                foundRelease = release;
+                                latestVersion = release.getString("tag_name").replace("v", "");
+                                releaseUrl = release.getString("html_url");
+                                Log.d("arzmod-app-module", "Found suitable release: " + latestVersion);
+                                break;
+                            }
+                        }
+                        
+                        if (foundRelease == null) {
+                            Log.w("arzmod-app-module", "No suitable release found for APK: " + targetApkName);
+                            return;
+                        }
+                        
+                        boolean isPrerelease = foundRelease.optBoolean("prerelease", false);
                         
                         int currentVersion = BuildConfig.VERSION_CODE;
                         int newVersion = Integer.parseInt(latestVersion);
@@ -757,6 +792,7 @@ public class ApplicationStart {
                             final boolean finalIsPrerelease = isPrerelease;
                             final String finalLatestVersion = latestVersion;
                             final SharedPreferences finalPrefs = prefs;
+                            final String finalReleaseUrl = releaseUrl;
                             
                             new Handler(Looper.getMainLooper()).post(new Runnable() {
                                 @Override
@@ -789,7 +825,7 @@ public class ApplicationStart {
                                     builder.setPositiveButton("Установить", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(releaseUrl));
+                                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(finalReleaseUrl));
                                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                             activity.startActivity(intent);
                                         }

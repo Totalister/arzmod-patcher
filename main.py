@@ -634,6 +634,49 @@ def insert_smali_code_after_line(file_path, method_name, target_line, smali_code
 		print("-------------------------------------------")
 		exitWithError(f"Произошла ошибка: {e}")
 		
+def set_locals(file_path, method_name, locals_count):
+	try:
+		with open(file_path, 'r', encoding='utf-8') as file:
+			lines = file.readlines()
+
+		in_target_method = False
+		modified_lines = []
+		locals_modified = False
+
+		for line in lines:
+			if method_name + "(" in line:
+				in_target_method = True
+
+			modified_lines.append(line)
+			if in_target_method and line.strip().startswith('.locals'):
+				modified_lines[-1] = f'\t.locals {locals_count}\n'
+				locals_modified = True
+
+			if in_target_method and line.strip() == '.end method':
+				in_target_method = False
+
+		if not locals_modified:
+			print("-------------------DEBUG-------------------")
+			print("file_path:", file_path)
+			print("method_name:", method_name)
+			print("locals_count:", locals_count)
+			print("in_target_method:", in_target_method)
+			print("Замена не выполнена: .locals не найден.")
+			print("-------------------------------------------")
+			exitWithError("Замена не выполнена: .locals не найден.")
+
+		with open(file_path, 'w', encoding='utf-8') as file:
+			file.writelines(modified_lines)
+
+	except Exception as e:
+		print("-------------------DEBUG-------------------")
+		print("file_path:", file_path)
+		print("method_name:", method_name)
+		print("locals_count:", locals_count)
+		print(e)
+		print("-------------------------------------------")
+		exitWithError(f"Произошла ошибка: {e}")
+
 def insert_smali_code_before_line(file_path, method_name, target_line_content, code_to_insert):
 	code_lines = code_to_insert.strip().splitlines(keepends=True)
 
@@ -1547,6 +1590,7 @@ def arzmod_patch():
 	insert_smali_code_after_line(get_src_path(patchs_path, "/ru/mrlargha/commonui/elements/authorization/presentation/screen/RegistrationVideoBackground.smali"), ".method private final setAwaitText", ".locals", """
 		invoke-static {p0, p1}, Lcom/arzmod/radare/InitGamePatch;->setAwaitText(Lru/mrlargha/commonui/elements/authorization/presentation/screen/RegistrationVideoBackground;Ljava/lang/String;)V
 	""")
+	set_locals(get_src_path(patchs_path, "/ru/mrlargha/commonui/elements/authorization/presentation/screen/RegistrationVideoBackground.smali"), ".method private final preload", 2)
 	insert_smali_code_after_line(get_src_path(patchs_path, "/ru/mrlargha/commonui/elements/authorization/presentation/screen/RegistrationVideoBackground.smali"), ".method private final preload", "Lru/mrlargha/commonui/elements/authorization/presentation/screen/RegistrationVideoBackground;->selectVideoMode", """
 		move-object v0, p0
 		const/4 v1, 0x1

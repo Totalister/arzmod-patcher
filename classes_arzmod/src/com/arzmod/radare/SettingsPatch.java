@@ -734,7 +734,7 @@ public class SettingsPatch {
         settingsList.add(new BooleanSetting("Режим копирования сборки", "С помощью этой функции вы сможете копировать свою сборку с Android/media/"+packageName+"/files в Android/data/"+packageName+"/files.\nЧтобы удалить сборку используйте функции проверки файлов, и включите функцию очистки неиспользуемых файлов, для очистки остатков.", IS_MODS_MODE, false, sharedPreferences));
         settingsList.add(new BooleanSetting("Проверка обновлений кеша игры", "При отключении данной функции, лаунчер не будет проверять обновления кеша игры", IS_MODE_MODS, true, sharedPreferences));
         settingsList.add(new BooleanSetting("Свободная кнопка запуска", "Данная функция позовляет запустить игру во время проверки обновления", IS_FREE_LAUNCH, false, sharedPreferences));
-        settingsList.add(new BooleanSetting("Эмуляция актуальной версии", "При включенной функции лаунчер отправляет на сервер самую актуальную версию игры независимую от текущей версии ARZMOD взятую с https://mob.maz-ins.com/game/release/app_version.json", IS_ACTUAL_VERSION, false, sharedPreferences));
+        settingsList.add(new BooleanSetting("Эмуляция актуальной версии", "При включенной функции лаунчер отправляет на сервер самую актуальную версию игры независимую от текущей версии ARZMOD взятую с https://mob.maz-ins.com/game/release/app_version.json", IS_ACTUAL_VERSION, true, sharedPreferences));
 
         
         settingsList.add(new ChatPositionSetting("Позиция чата", CHAT_POSITION_ENABLED, sharedPreferences));
