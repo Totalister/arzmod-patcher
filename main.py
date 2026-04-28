@@ -620,6 +620,8 @@ def insert_smali_code_after_line(file_path, method_name, target_line, smali_code
 			print("Замена не выполнена: блок не найден.")
 			print("-------------------------------------------")
 			exitWithError("Замена не выполнена: блок не найден.")
+		else:
+			print(f"Строка добавлена в файле {file_path}.")
 
 		with open(file_path, 'w', encoding='utf-8') as file:
 			file.writelines(modified_lines)
@@ -649,7 +651,16 @@ def set_locals(file_path, method_name, locals_count):
 
 			modified_lines.append(line)
 			if in_target_method and line.strip().startswith('.locals'):
-				modified_lines[-1] = f'\t.locals {locals_count}\n'
+				if isinstance(locals_count, str) and locals_count.startswith('+'):
+					current_locals = int(line.strip().split('.locals')[1].strip())
+					new_locals = current_locals + int(locals_count[1:])
+					modified_lines[-1] = f'\t.locals {new_locals}\n'
+				elif isinstance(locals_count, str) and locals_count.startswith('-'):
+					current_locals = int(line.strip().split('.locals')[1].strip())
+					new_locals = current_locals + int(locals_count)
+					modified_lines[-1] = f'\t.locals {new_locals}\n'
+				else:
+					modified_lines[-1] = f'\t.locals {locals_count}\n'
 				locals_modified = True
 
 			if in_target_method and line.strip() == '.end method':
@@ -664,6 +675,8 @@ def set_locals(file_path, method_name, locals_count):
 			print("Замена не выполнена: .locals не найден.")
 			print("-------------------------------------------")
 			exitWithError("Замена не выполнена: .locals не найден.")
+		else:
+			print(f".locals изменены в файле {file_path}.")
 
 		with open(file_path, 'w', encoding='utf-8') as file:
 			file.writelines(modified_lines)
@@ -673,7 +686,8 @@ def set_locals(file_path, method_name, locals_count):
 		print("file_path:", file_path)
 		print("method_name:", method_name)
 		print("locals_count:", locals_count)
-		print(e)
+		print("in_target_method:", in_target_method)
+		print(f"Произошла ошибка: {e}")
 		print("-------------------------------------------")
 		exitWithError(f"Произошла ошибка: {e}")
 
@@ -1590,7 +1604,7 @@ def arzmod_patch():
 	insert_smali_code_after_line(get_src_path(patchs_path, "/ru/mrlargha/commonui/elements/authorization/presentation/screen/RegistrationVideoBackground.smali"), ".method private final setAwaitText", ".locals", """
 		invoke-static {p0, p1}, Lcom/arzmod/radare/InitGamePatch;->setAwaitText(Lru/mrlargha/commonui/elements/authorization/presentation/screen/RegistrationVideoBackground;Ljava/lang/String;)V
 	""")
-	set_locals(get_src_path(patchs_path, "/ru/mrlargha/commonui/elements/authorization/presentation/screen/RegistrationVideoBackground.smali"), ".method private final preload", 2)
+	set_locals(get_src_path(patchs_path, "/ru/mrlargha/commonui/elements/authorization/presentation/screen/RegistrationVideoBackground.smali"), ".method private final preload", "+1")
 	insert_smali_code_after_line(get_src_path(patchs_path, "/ru/mrlargha/commonui/elements/authorization/presentation/screen/RegistrationVideoBackground.smali"), ".method private final preload", "Lru/mrlargha/commonui/elements/authorization/presentation/screen/RegistrationVideoBackground;->selectVideoMode", """
 		move-object v0, p0
 		const/4 v1, 0x1
@@ -1605,9 +1619,8 @@ def arzmod_patch():
 		move-result p1
 	""")
 	search_and_replace(get_src_path(patchs_path, "/ru/mrlargha/commonui/elements/hud/presentation/Hud.smali"), ".field private final binding", ".field public final binding")
-	insert_smali_code_after_line(get_src_path(patchs_path, "/ru/mrlargha/commonui/elements/hud/presentation/Hud$installHud$1$1.smali"), ".method public final invokeSuspend", "Lru/mrlargha/commonui/databinding/HudPageBinding;->hudServerInfoContainer:Landroidx/constraintlayout/widget/ConstraintLayout;", """
-		iget-object v0, p0, Lru/mrlargha/commonui/elements/hud/presentation/Hud$installHud$1$1;->this$0:Lru/mrlargha/commonui/elements/hud/presentation/Hud;
-		invoke-static {v0}, Lcom/arzmod/radare/GamePatches;->updateHudShield(Lru/mrlargha/commonui/elements/hud/presentation/Hud;)V
+	insert_smali_code_before_line(get_src_path(patchs_path, "/ru/mrlargha/commonui/elements/hud/presentation/Hud$installHud$1$1.smali"), ".method public final invokeSuspend", "invoke-static {p0}, Lru/mrlargha/commonui/elements/hud/presentation/Hud;->access$getBinding$p(Lru/mrlargha/commonui/elements/hud/presentation/Hud;)Lru/mrlargha/commonui/databinding/HudPageBinding;", """
+		invoke-static {p0}, Lcom/arzmod/radare/GamePatches;->updateHudShield(Lru/mrlargha/commonui/elements/hud/presentation/Hud;)V
 	""")
 	insert_smali_code_after_line(get_src_path(patchs_path, "/ru/mrlargha/commonui/elements/hud/presentation/Hud.smali"), ".method public final installHud", "Lru/mrlargha/commonui/databinding/HudPageBinding;->hudServerShieldSite:Landroid/widget/TextView;", """
 		invoke-static {p0}, Lcom/arzmod/radare/GamePatches;->updateHudShield(Lru/mrlargha/commonui/elements/hud/presentation/Hud;)V
