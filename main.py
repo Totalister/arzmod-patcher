@@ -1626,7 +1626,7 @@ def arzmod_patch():
 		invoke-static {p0}, Lcom/arzmod/radare/GamePatches;->updateHudShield(Lru/mrlargha/commonui/elements/hud/presentation/Hud;)V
 	""")
 	
-	insert_smali_code_after_line(get_src_path(patchs_path, "/ru/mrlargha/commonui/core/SAMPUIElement.smali"), ".method public setVisibility", "if-eq v0, v1, :cond_3", """
+	insert_smali_code_after_line(get_src_path(patchs_path, "/ru/mrlargha/commonui/core/SAMPUIElement.smali"), ".method public setVisibility", "if-eq v0, v1, :cond_4", """
 		sget-object v1, Lru/mrlargha/commonui/core/UIElementID;->HUD:Lru/mrlargha/commonui/core/UIElementID;
 		invoke-virtual {v1}, Lru/mrlargha/commonui/core/UIElementID;->getId()I
 		move-result v1
@@ -1634,7 +1634,7 @@ def arzmod_patch():
 
 		invoke-static {}, Lcom/arzmod/radare/GamePatches;->notifyVisible()Z
 		move-result v1
-		if-eqz v1, :cond_3
+		if-eqz v1, :cond_4
 
 		:passVisibleUpdate
 	""")

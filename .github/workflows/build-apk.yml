@@ -60,7 +60,7 @@ jobs:
       - name: Get Latest Version
         id: get_version
         run: |
-          VERSION_INFO=$(curl -s http://mob.maz-ins.com/game/release/app_version.json)
+          VERSION_INFO=$(curl -sL http://mob.maz-ins.com/game/release/app_version.json)
           LAUNCHER_VERSION=$(echo $VERSION_INFO | jq -r '.launcherVersion')
           LAUNCHER_VERSION_NAME=$(echo $VERSION_INFO | jq -r '.launcherVersionName')
 
