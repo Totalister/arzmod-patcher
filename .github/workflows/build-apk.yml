@@ -185,7 +185,7 @@ jobs:
         if: inputs.build_arizona
         run: |
           mkdir -p dist
-          python main.py -actual -fullarm ${{ steps.get_version.outputs.launcher_version }}
+          python main1.py -actual ${{ steps.get_version.outputs.launcher_version }}
           
           if [ -f "./app-debug/dist/app-arzmod-x32.apk" ]; then
             mv "./app-debug/dist/app-arzmod-x32.apk" "./dist/app-arizona-x32-patched.apk"
