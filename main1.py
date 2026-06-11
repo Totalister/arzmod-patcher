@@ -1211,7 +1211,7 @@ def arzmod_patch():
         # PACKAGE NAME PATCH
         package_name = f"{'com.arizona.game' if project == ARIZONA_MOBILE else 'com.rodina.game'}{'.git1' if not arzmodbuild  else ''}"
         set_package_name("com.arizona21.game.web" if project == ARIZONA_MOBILE else "com.rodina21.game.web", package_name)
-        set_xml_string("app_name", "ARIZONA MOD1" if project == ARIZONA_MOBILE else "RODINA MOD")
+        set_xml_string("app_name", "ARIZONA MOD" if project == ARIZONA_MOBILE else "RODINA MOD")
 
         # TEXT PATCH
         search_and_replace(get_src_path(patchs_path, "/com/arizona/launcher/MainEntrench$IncomingHandler.smali"), r"\u041f\u0440\u043e\u0432\u0435\u0440\u043a\u0430 \u0444\u0430\u0439\u043b\u043e\u0432 \u0432\u044b\u043f\u043e\u043b\u043d\u0435\u043d\u0430, \u0442\u0440\u0435\u0431\u0443\u0435\u0442\u0441\u044f \u043f\u0435\u0440\u0435\u0437\u0430\u043f\u0443\u0441\u043a", r"\u041f\u0440\u043e\u0432\u0435\u0440\u043a\u0430\u0020\u0444\u0430\u0439\u043b\u043e\u0432\u0020\u0432\u044b\u043f\u043e\u043b\u043d\u0435\u043d\u0430\u002c\u0020\u0442\u0440\u0435\u0431\u0443\u0435\u0442\u0441\u044f\u0020\u043f\u0435\u0440\u0435\u0437\u0430\u043f\u0443\u0441\u043a\u002e\u0020\u041f\u043e\u0441\u043b\u0435\u0020\u043f\u0435\u0440\u0435\u0437\u0430\u043f\u0443\u0441\u043a\u0430\u002c\u0020\u043e\u0431\u043d\u043e\u0432\u0438\u0442\u0435\u0020\u0438\u0433\u0440\u0443\u0020\u0434\u043b\u044f\u0020\u043a\u043e\u0440\u0440\u0435\u043a\u0442\u043d\u043e\u0439\u0020\u0440\u0430\u0431\u043e\u0442\u044b\u002e")
